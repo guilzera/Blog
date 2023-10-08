@@ -6,6 +6,7 @@ namespace Blog.Controllers
     [Route("")]
     public class HomeController : ControllerBase
     {
+        //Verificar se a API está online.
         [HttpGet("")]
         public IActionResult Get()
         {
