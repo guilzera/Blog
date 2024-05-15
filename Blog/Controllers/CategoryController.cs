@@ -1,4 +1,5 @@
 ﻿using Blog.Data;
+using Blog.Extentions;
 using Blog.Models;
 using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Blog.Controllers
 {
     [ApiController]
-    public class CategoryController  : ControllerBase
+    public class CategoryController : ControllerBase
     {
         [HttpGet("v1/categories")]
         public async Task<IActionResult> GetAsync([FromServices] BlogDataContext context)
@@ -41,11 +42,11 @@ namespace Blog.Controllers
         }
 
         [HttpPost("v1/categories")]
-        public async Task<IActionResult> PostAsync([FromBody] EditorCategoryViewModel model, 
+        public async Task<IActionResult> PostAsync([FromBody] EditorCategoryViewModel model,
             [FromServices] BlogDataContext context)
         {
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(new ResultViewModel<Category>(ModelState.GetErrors()));
             try
             {
                 var category = new Category
@@ -57,15 +58,15 @@ namespace Blog.Controllers
                 await context.Categories.AddAsync(category);
                 await context.SaveChangesAsync();
 
-                return Created($"v1/categories/{category.Id}", category);
+                return Created($"v1/categories/{category.Id}", new ResultViewModel<Category>(category));
             }
             catch (DbUpdateException)
             {
-                return StatusCode(500, "O5XE9 - Não foi possível incluir a categoria");
+                return StatusCode(500, new ResultViewModel<Category>("O5XE9 - Não foi possível incluir a categoria"));
             }
-            catch (Exception)
+            catch
             {
-                return StatusCode(500, "O5XE10 - Falha interna no servidor");
+                return StatusCode(500, new ResultViewModel<Category>("O5XE10 - Falha interna no servidor"));
             }
         }
 
@@ -76,7 +77,7 @@ namespace Blog.Controllers
             {
                 var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
                 if (category == null)
-                    return NotFound();
+                    return NotFound(new ResultViewModel<Category>("Conteudo não encontrado"));
 
                 category.Name = model.Name;
                 category.Slug = model.Slug;
@@ -84,15 +85,15 @@ namespace Blog.Controllers
                 context.Categories.Update(category);
                 await context.SaveChangesAsync();
 
-                return Ok();
+                return Ok(new ResultViewModel<Category>(category));
             }
             catch (DbUpdateException)
             {
-                return StatusCode(500, "O5XE8 - Não foi possível alterar a categoria");
+                return StatusCode(500, new ResultViewModel<Category>("O5XE8 - Não foi possível alterar a categoria"));
             }
-            catch (Exception)
+            catch
             {
-                return StatusCode(500, "O5XE11 - Falha interna no servidor");
+                return StatusCode(500, new ResultViewModel<Category>("O5XE11 - Falha interna no servidor"));
             }
         }
 
@@ -103,20 +104,20 @@ namespace Blog.Controllers
             {
                 var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
                 if (category == null)
-                    return NotFound();
+                    return NotFound(new ResultViewModel<Category>("Conteudo não encontrado"));
 
                 context.Categories.Remove(category);
                 await context.SaveChangesAsync();
 
-                return Ok(category);
+                return Ok(new ResultViewModel<Category>(category));
             }
             catch (DbUpdateException)
             {
-                return StatusCode(500, "O5XE7 - Não foi possível excluir a categoria");
+                return StatusCode(500, new ResultViewModel<Category>("O5XE7 - Não foi possível excluir a categoria"));
             }
-            catch (Exception)
+            catch
             {
-                return StatusCode(500, "O5XE12 - Falha interna no servidor");
+                return StatusCode(500, new ResultViewModel<Category>("O5XE12 - Falha interna no servidor"));
             }
         }
     }
