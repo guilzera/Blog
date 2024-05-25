@@ -130,3 +130,4 @@ C:\dev\Blog\Blog\obj\Debug\net8.0\refint\Blog.dll
 C:\dev\Blog\Blog\obj\Debug\net8.0\Blog.pdb
 C:\dev\Blog\Blog\obj\Debug\net8.0\Blog.genruntimeconfig.cache
 C:\dev\Blog\Blog\obj\Debug\net8.0\ref\Blog.dll
+C:\dev\Blog\Blog\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
